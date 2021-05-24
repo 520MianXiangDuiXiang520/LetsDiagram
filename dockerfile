@@ -54,7 +54,7 @@ COPY ./lets-diagram/nginx ./lets-diagram/nginx
 RUN cp -r ./lets-diagram/nginx/conf/* /etc/nginx 
 
 RUN echo "nginx" >> ./run.sh \
-    && echo "./let-diagram-api/let-diagram-api >> ./let-diagram-api/logs/api.log" >> ./run.sh \
+    && echo "./let-diagram-api/let-diagram-api --debug=false >> ./let-diagram-api/logs/api.log" >> ./run.sh \
     && chmod +x ./run.sh
 
 EXPOSE 8888
