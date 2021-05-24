@@ -1,0 +1,108 @@
+{
+  "fromArrow": "",
+  "lineName": "curve",
+  "locked": 0,
+  "mqttOptions": {
+    "clientId": "e25e6e"
+  },
+  "pens": [
+    {
+      "animateDuration": 0,
+      "animateFrame": 0,
+      "animateFrames": [],
+      "animatePos": 0,
+      "animateType": "",
+      "borderRadius": 0,
+      "dash": 0,
+      "events": [],
+      "fillStyle": "",
+      "fontColor": "#222222",
+      "fontFamily": "\"Hiragino Sans GB\", \"Microsoft YaHei\", \"Helvetica Neue\", Helvetica, Arial",
+      "fontSize": 12,
+      "fontStyle": "normal",
+      "fontWeight": "normal",
+      "fullTextRect": {
+        "center": {
+          "x": 383,
+          "y": 146
+        },
+        "ex": 418.7142857142857,
+        "ey": 181.71428571428572,
+        "height": 71.42857142857143,
+        "width": 71.42857142857143,
+        "x": 347.2857142857143,
+        "y": 110.28571428571428
+      },
+      "globalAlpha": 1,
+      "gradientAngle": 0,
+      "gradientRadius": 0.01,
+      "iconRect": {
+        "center": {
+          "x": 383,
+          "y": 131
+        },
+        "ex": 408,
+        "ey": 156,
+        "height": 50,
+        "width": 50,
+        "x": 358,
+        "y": 106
+      },
+      "id": "d235d12",
+      "imageAlign": "center",
+      "imageRatio": true,
+      "lineDashOffset": 0,
+      "lineHeight": 1.5,
+      "lineWidth": 1,
+      "name": "circle",
+      "offsetRotate": 0,
+      "paddingBottom": 0,
+      "paddingBottomNum": 0,
+      "paddingLeft": 0,
+      "paddingLeftNum": 0,
+      "paddingRight": 0,
+      "paddingRightNum": 0,
+      "paddingTop": 0,
+      "paddingTopNum": 0,
+      "rect": {
+        "center": {
+          "x": 383,
+          "y": 146
+        },
+        "ex": 433,
+        "ey": 196,
+        "height": 100,
+        "width": 100,
+        "x": 333,
+        "y": 96
+      },
+      "rotate": 0,
+      "strokeStyle": "#222222",
+      "tags": [],
+      "text": "圆",
+      "textAlign": "center",
+      "textBackground": "",
+      "textBaseline": "middle",
+      "textMaxLine": 1,
+      "textOffsetX": 0,
+      "textOffsetY": 0,
+      "textRect": {
+        "center": {
+          "x": 383,
+          "y": 171.83333333333334
+        },
+        "ex": 408,
+        "ey": 186.00000000000003,
+        "height": 28.333333333333336,
+        "width": 50,
+        "x": 358,
+        "y": 157.66666666666669
+      },
+      "type": 0,
+      "visible": true,
+      "zRotate": 0
+    }
+  ],
+  "scale": 1,
+  "toArrow": "triangleSolid"
+}

@@ -1,0 +1,47 @@
+{
+  "mysql_setting": {
+    "engine": "mysql",
+    "host": "127.0.0.1",
+    "port": 3306,
+    "password": "1234567",
+    "db_name": "let-diagram",
+    "user": "root",
+    "max_idle_conn": 32,
+    "max_open_conn": 64,
+    "max_lifetime": 3000,
+    "log_mode": true
+  },
+  "token_setting": {
+    "expire_time": 3600000000000000
+  },
+  "cors_setting": {
+    "allowed_list": [
+      "http://localhost:8080",
+      "http://localhost:8081",
+      "http://localhost:8082",
+      "http://127.0.0.1:8889",
+      "http://localhost:8889",
+      "http://localhost:81",
+      "http://10.132.235.214:8080"
+    ]
+  },
+  "mongodb_conn": {
+    "host": "127.0.0.1",
+    "port": 27017,
+    "database": "let-diagram"
+  },
+  "default_setting": {
+    "default_page": 1,
+    "default_page_size": 10,
+    "default_max_pcu": 10,
+    "cooperate_code_len": 6
+  },
+  "redis_setting": {
+    "host": "127.0.0.1",
+    "port": 8000,
+    "password": "password",
+    "max_idle_conn": 32,
+    "max_open_conn": 64,
+    "max_lifetime": 3000
+  }
+}

@@ -1,0 +1,16 @@
+version: "3.6"
+services: 
+    let-diagram:
+        restart: always
+        build:
+            context: ./
+            dockerfile: dockerfile
+        image: let-diagram
+        container_name: let-diagram
+        ports:
+            - 88:80
+            - 445:443
+            - 8889:8888
+        volumes: 
+            - ./logs/web:/var/log/nginx
+            - ./logs/api:/app/let-diagram-api/logs
