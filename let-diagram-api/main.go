@@ -1,15 +1,16 @@
 package main
 
 import (
-    "flag"
-    `fmt`
-    "github.com/gin-gonic/gin"
-    `io`
-    `log`
-    "net/http"
-    _ "net/http/pprof"
-    `os`
-    `time`
+	"flag"
+	"fmt"
+	"github.com/520MianXiangDuiXiang520/GoTools/dao"
+	"github.com/gin-gonic/gin"
+	"io"
+	"log"
+	"net/http"
+	_ "net/http/pprof"
+	"os"
+	"time"
 )
 
 func init() {
@@ -25,16 +26,19 @@ func main() {
 		}()
 		gin.SetMode(gin.DebugMode)
 	} else {
-        gin.SetMode(gin.ReleaseMode)
-        n := time.Now()
-        logFileName := fmt.Sprintf("./logs/let_diagram_api_%d_%d_%d.log", n.Year(), n.Month(), n.Day())
-        logF, err := os.OpenFile(logFileName, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
-        if err != nil {
-            logF = os.Stdout
-            log.Printf("can not open %s, err: %v", logFileName, err)
-        }
-        log.SetOutput(logF)
-        gin.DefaultWriter = io.MultiWriter(logF)
+		gin.SetMode(gin.ReleaseMode)
+
+		n := time.Now()
+		logFileName := fmt.Sprintf("./logs/let_diagram_api_%d_%d_%d.log", n.Year(), n.Month(), n.Day())
+		logF, err := os.OpenFile(logFileName, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+		logger := log.New(logF, "[gorm]", log.Ldate|log.Lshortfile)
+		dao.GetDB().SetLogger(logger)
+		if err != nil {
+			logF = os.Stdout
+			log.Printf("can not open %s, err: %v", logFileName, err)
+		}
+		log.SetOutput(logF)
+		gin.DefaultWriter = io.MultiWriter(logF)
 	}
 	engine := gin.Default()
 	rootRoutes(engine)
