@@ -8,9 +8,14 @@ import (
 	"image"
 	"image/png"
 	_ "image/png"
+	`log`
 )
 
 func CompressCover(b64 string) (string, error) {
+	if len(b64) < 22 {
+		log.Printf("b64 does not start with data:image/png;base64,:%s", b64)
+		return b64, errors.New("b64 does not start with data:image/png;base64,")
+	}
 	b64 = b64[22:]
 	dimg, err := base64.StdEncoding.DecodeString(b64)
 	if err != nil {

@@ -27,7 +27,6 @@ func main() {
 		gin.SetMode(gin.DebugMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
-
 		n := time.Now()
 		logFileName := fmt.Sprintf("./logs/let_diagram_api_%d_%d_%d.log", n.Year(), n.Month(), n.Day())
 		logF, err := os.OpenFile(logFileName, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)

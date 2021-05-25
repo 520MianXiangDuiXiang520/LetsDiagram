@@ -7,12 +7,19 @@ import { Message } from "element-ui";
 import vueAxios from "vue-axios";
 import axios from "axios";
 import cookie from "vue-cookie";
+import VueLazyload from "vue-lazyload";
 import "topology-vue/topology-vue.css";
 import "element-ui/lib/theme-chalk/index.css";
 
 Vue.use(topology);
 Vue.use(ElementUI);
 Vue.use(vueAxios, axios)
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: "/letdiagram.png",
+  loading: "/loading.gif",
+  attempt: 3,
+});
 
 Vue.config.productionTip = false
 Vue.prototype.$axio = axios

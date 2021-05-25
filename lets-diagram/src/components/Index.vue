@@ -67,15 +67,17 @@
                 ></i
               ></el-col>
             </el-row>
-            <div class="cover" @click="openCanvas(canvas.id)" >
-              <el-image
-                v-if="canvas.cover != ''"
-                :src="canvas.cover"
-                :id="'cover' + canvas.id"
-              ></el-image>
-              <el-image :id="'cover' + canvas.id" v-else src="/letdiagram.png"></el-image>
-            </div> </el-card
-        ></el-col>
+            <div class="cover" @click="openCanvas(canvas.id)">
+              <lazy-component>
+                <img :src="getCover(canvas.id)" :id="'cover'+canvas.id"/>
+              </lazy-component>
+              <!-- <el-image
+                :src="covers[canvas.id]"
+                :id="'cover' + canvas.id" layz
+              ></el-image> -->
+            </div>
+          </el-card></el-col
+        >
       </el-row>
     </div>
 
@@ -119,6 +121,7 @@ export default {
       deleteSure: false,
       enterNameFlag: false,
       newCanvasName: "",
+      covers: {},
     };
   },
   components: {},
@@ -200,22 +203,35 @@ export default {
         self.deleteCanvas(id);
       });
     },
-    getCovers: function() {
-      for (let i = 0, len = this.canvasList.length; i < len; i++) {
-        let id = this.canvasList[i].id
-        this.axios({
+    getCovers: async function(id) {
+      let self = this
+      await self
+        .axios({
           method: "post",
           url: "canvas/cover/get/",
           data: {
             canvas_id: id,
           },
-        }).then(function(response) {
+        })
+        .then(function(response) {
           if (response.data["header"]["code"] === 200) {
-            let doc = document.getElementById("cover"+ id)
-            doc.setAttribute("src", response.data["cover"])
+            console.log(id + "S");
+            self.covers[id] = response.data["cover"];
           }
+        })
+        .catch(function(err) {
+          console.log(err);
         });
-      }
+        console.log("end" + id);
+    },
+    getCover: function(id){
+      let self = this
+      this.getCovers(id).then(function(){
+        console.log(self.covers[id]);
+        let doc = document.getElementById("cover"+id)
+        doc.setAttribute("src", self.covers[id])
+        
+      })
     },
     getAll: function() {
       let self = this;
@@ -230,7 +246,6 @@ export default {
         if (response.data["header"]["code"] === 200) {
           self.canvasList = response.data["list"];
           self.total = response.data["total"];
-          self.getCovers()
         }
       });
     },
