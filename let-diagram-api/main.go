@@ -28,7 +28,7 @@ func main() {
 	} else {
 		gin.SetMode(gin.ReleaseMode)
 		n := time.Now()
-		logFileName := fmt.Sprintf("./logs/let_diagram_api_%d_%d_%d.log", n.Year(), n.Month(), n.Day())
+		logFileName := fmt.Sprintf("/app/let-diagram-api/logs/let_diagram_api_%d_%d_%d.log", n.Year(), n.Month(), n.Day())
 		logF, err := os.OpenFile(logFileName, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 		logger := log.New(logF, "[gorm]", log.Ldate|log.Lshortfile)
 		dao.GetDB().SetLogger(logger)
