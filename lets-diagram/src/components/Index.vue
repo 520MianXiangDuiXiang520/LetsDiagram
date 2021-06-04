@@ -43,16 +43,16 @@
     </el-dialog>
 
     <el-dialog title="画布重命名" :visible.sync="rename.visible">
-  <el-form :model="form">
-    <el-form-item label="新名称" :label-width="formLabelWidth">
-      <el-input v-model="rename.name" autocomplete="off"></el-input>
-    </el-form-item>
-  </el-form>
-  <div slot="footer" class="dialog-footer">
-    <el-button @click="rename.visible = false">取 消</el-button>
-    <el-button type="primary" @click="doCanvasRename">确 定</el-button>
-  </div>
-</el-dialog>
+      <el-form :model="form">
+        <el-form-item label="新名称" :label-width="formLabelWidth">
+          <el-input v-model="rename.name" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="rename.visible = false">取 消</el-button>
+        <el-button type="primary" @click="doCanvasRename">确 定</el-button>
+      </div>
+    </el-dialog>
 
     <!-- canvas 列表 -->
     <div class="canvas-list">
@@ -66,8 +66,21 @@
           ><el-card shadow="hover" class="canvas-cover index-list">
             <el-row :gutter="20">
               <el-col :span="18" v-if="canvas.name != ''">
-                <p class="canvasName"  @click="openRenameForm(canvas.id, canvas.name)">{{canvas.name.slice(0, 20)}}</p></el-col>
-              <el-col :span="18" v-else> <p class="canvasName" @click="openRenameForm(canvas.id, '未命名文件')">未命名文件</p> </el-col>
+                <p
+                  class="canvasName"
+                  @click="openRenameForm(canvas.id, canvas.name)"
+                >
+                  {{ canvas.name.slice(0, 20) }}
+                </p></el-col
+              >
+              <el-col :span="18" v-else>
+                <p
+                  class="canvasName"
+                  @click="openRenameForm(canvas.id, '未命名文件')"
+                >
+                  未命名文件
+                </p>
+              </el-col>
               <el-col
                 :span="6"
                 class="delete-race"
@@ -79,7 +92,7 @@
               ></el-col>
             </el-row>
             <div class="cover" @click="openCanvas(canvas.id)">
-              <img :src="getCover(canvas.id)" :id="'cover'+canvas.id"/>
+              <img :src="getCover(canvas.id)" :id="'cover' + canvas.id" />
               <!-- <lazy-component>
                 <img :src="getCover(canvas.id)" :id="'cover'+canvas.id"/>
               </lazy-component> -->
@@ -120,6 +133,7 @@
 </template>
 
 <script>
+import * as storage from "../utils/coverStorage.js";
 export default {
   name: "Index",
   data() {
@@ -129,9 +143,6 @@ export default {
       size: 10,
       total: 0,
       dialogTableVisible: false,
-      renameFormVisible: false,
-      canvasRename: "",
-      canvasRenameID: 0,
       cooperateCode: "",
       deleteSure: false,
       enterNameFlag: false,
@@ -140,8 +151,8 @@ export default {
       rename: {
         id: 0,
         name: "",
-        visible: false
-      }
+        visible: false,
+      },
     };
   },
   components: {},
@@ -224,46 +235,44 @@ export default {
       });
     },
     openRenameForm: function(id, oldName) {
-      this.rename.visible = true
-      this.rename.name = oldName
-      this.rename.id = id
+      this.rename.visible = true;
+      this.rename.name = oldName;
+      this.rename.id = id;
     },
     closeRenameForm: function() {
-      this.rename.visible = false
-        this.rename.name = ""
-        this.rename.id = 0
+      this.rename.visible = false;
+      this.rename.name = "";
+      this.rename.id = 0;
     },
     doCanvasRename: function() {
-       let self = this
-       self
+      let self = this;
+      self
         .axios({
           method: "post",
           url: "canvas/rename/",
           data: {
             canvas_id: this.rename.id,
-            name: this.rename.name
+            name: this.rename.name,
           },
         })
         .then(function(response) {
           if (response.data["header"]["code"] === 200) {
-            self.$message.success("重命名成功")
-            // 修改本地数据
-            for (let i = 0; i < self.canvasList.length; i++) {
-              if (self.canvasList[i]["id"] == self.canvasRenameID) {
-                self.canvasList[i]["name"] = self.rename.name
-                break
-              }
-            }
+            self.$message.success("重命名成功");
+            self.getAll();
           }
         })
         .catch(function(err) {
           console.log(err);
-          self.$message.error("重命名失败")
+          self.$message.error("重命名失败");
         });
-        this.closeRenameForm()
+      this.closeRenameForm();
     },
     getCovers: async function(id) {
-      let self = this
+      let coverFromLocal = storage.get(id);
+      if (coverFromLocal != null && coverFromLocal.length > 0) {
+        this.covers[id] = coverFromLocal;
+      } else {
+        let self = this;
       await self
         .axios({
           method: "post",
@@ -275,19 +284,21 @@ export default {
         .then(function(response) {
           if (response.data["header"]["code"] === 200) {
             self.covers[id] = response.data["cover"];
+            storage.set(id, response.data["cover"]);
           }
         })
         .catch(function(err) {
           console.log(err);
         });
+      }
+      
     },
-    getCover: function(id){
-      let self = this
-      this.getCovers(id).then(function(){
-        let doc = document.getElementById("cover"+id)
-        doc.setAttribute("src", self.covers[id])
-        
-      })
+    getCover: function(id) {
+      let self = this;
+        this.getCovers(id).then(function() {
+          let doc = document.getElementById("cover" + id);
+          doc.setAttribute("src", self.covers[id]);
+        });
     },
     getAll: function() {
       let self = this;
@@ -306,6 +317,7 @@ export default {
       });
     },
     openCanvas: function(id) {
+      storage.remove(id)
       this.$router.push("/newCanvas/" + id);
     },
   },
@@ -313,9 +325,9 @@ export default {
 </script>
 
 <style scoped>
-.canvasName{
-    font-size: 14px;
-    color: #303133;
+.canvasName {
+  font-size: 14px;
+  color: #303133;
 }
 .delete-race {
   border-radius: 6px;
