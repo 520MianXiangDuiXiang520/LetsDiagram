@@ -32,6 +32,15 @@ Vue.prototype.$base_api = "139.9.117.134:8889";
 // axios.defaults.baseURL = "http://localhost:8888";
 // Vue.prototype.$base_api = "localhost:8888";
 
+// 请求拦截器
+axios.interceptors.request.use(function (config) {
+    config.headers["token"] = cookie.get("SESSIONID");
+    return config;
+  }, function (error) {
+    // 对请求错误做些什么
+    return Promise.reject(error);
+  });
+
 // 响应拦截器
 axios.interceptors.response.use(
   function(response) {
