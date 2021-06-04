@@ -10,20 +10,28 @@ import (
 )
 
 func Routes(g *gin.RouterGroup) {
-	g.POST("new/",             newCanvasHandlers()...)
-	g.POST("open/",            openCanvasHandlers()...)
-	g.POST("all/",             allCanvasHandlers()...)
-	g.POST("cooperate/",       cooperateHandler()...)
+	g.POST("new/", newCanvasHandlers()...)
+	g.POST("open/", openCanvasHandlers()...)
+	g.POST("all/", allCanvasHandlers()...)
+	g.POST("cooperate/", cooperateHandler()...)
 	g.POST("check_cooperate/", checkCooperateHandler()...)
-	g.POST("join/",            joinHandler()...)
-	g.POST("collaborators/",   collaboratorsHandler()...)
-	g.POST("fork/",            forkHandler()...)
-	g.POST("delete/",          deleteCanvasHandler()...)
-	g.GET("paint/",            paintCanvasHandlers()...)
+	g.POST("join/", joinHandler()...)
+	g.POST("collaborators/", collaboratorsHandler()...)
+	g.POST("fork/", forkHandler()...)
+	g.POST("delete/", deleteCanvasHandler()...)
+	g.POST("rename/", renameCanvasHandler()...)
+	g.GET("paint/", paintCanvasHandlers()...)
 	ginUtils.URLPatterns(g, "cover/", cover.Routes,
-	    middleware.Auth(middleware2.TokenAuth),
-	    middleware.Permiter(middleware2.ISCreator),
+		middleware.Auth(middleware2.TokenAuth),
+		middleware.Permiter(middleware2.ISCreator),
 	)
+}
+
+func renameCanvasHandler() []gin.HandlerFunc {
+	return []gin.HandlerFunc{
+		middleware.Auth(middleware2.TokenAuth),
+		ginUtils.Handler(RenameCheck, RenameLogic, RenameRequestFields{}),
+	}
 }
 
 func deleteCanvasHandler() []gin.HandlerFunc {

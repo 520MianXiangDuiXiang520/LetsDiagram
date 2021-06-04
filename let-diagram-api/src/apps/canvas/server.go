@@ -33,6 +33,18 @@ func checkUser(request *ginUtils.Request, response *ginUtils.Response) (*models.
 	return user.(*models.User), ok
 }
 
+func RenameLogic(request *ginUtils.Request, response *ginUtils.Response) error {
+	req := request.Req.(*RenameRequestFields)
+	if !dao.CanvasRename(req.Name, req.CanvasID) {
+		response.RespCode = http.StatusBadRequest
+		response.Resp = RenameResponseFields{Header: ginUtils.ParamErrorRespHeader}
+		return nil
+	}
+	response.RespCode = http.StatusOK
+	response.Resp = RenameResponseFields{Header: ginUtils.SuccessRespHeader}
+	return nil
+}
+
 // NewLogic 处理用户新建 Canvas 请求
 func NewLogic(request *ginUtils.Request, response *ginUtils.Response) error {
 	user, ok := checkUser(request, response)

@@ -11,42 +11,52 @@ import (
 	"log"
 )
 
+func CanvasRename(name string, canvasID uint) bool {
+	db := dao.GetDB()
+	err := mysql.UpdateCanvasName(db, canvasID, name)
+	if err != nil {
+		log.Printf("fail to rename canvas(%d) to %s: %v", canvasID, name, err)
+		return false
+	}
+	return true
+}
+
 func DeleteCanvas(canvasID, userID uint) bool {
-    var err error
-    tx := dao.GetDB().Begin()
-    defer func() {
-        if err != nil {
-            log.Printf("%+v", err)
-            tx.Rollback()
-        }
-        tx.Commit()
-    }()
-    deleted, err := mysql.SelectCanvasInfoByID(tx, canvasID)
-    if err != nil {
-        err = errors.Wrap(err, fmt.Sprintf("can not find canvas where id = %d", canvasID))
-        return false
-    }
-    // 删除 canvas_user
-    err = mysql.DeleteCanvasUser(tx, canvasID, userID)
-    if err != nil {
-        return false
-    }
-    // 删除 canvas_info
-    err = mysql.DeleteCanvasInfo(tx, canvasID)
-    if err != nil {
-        return false
-    }
-    // 删除 canvas_data
-    err = mysql.DeleteCanvasData(tx, deleted.DataID)
-    if err != nil {
-        return false
-    }
-    // 删除 canvas_cover
-    err = mysql.DeleteCover(tx, deleted.CoverID)
-    if err != nil {
-        return false
-    }
-    return true
+	var err error
+	tx := dao.GetDB().Begin()
+	defer func() {
+		if err != nil {
+			log.Printf("%+v", err)
+			tx.Rollback()
+		}
+		tx.Commit()
+	}()
+	deleted, err := mysql.SelectCanvasInfoByID(tx, canvasID)
+	if err != nil {
+		err = errors.Wrap(err, fmt.Sprintf("can not find canvas where id = %d", canvasID))
+		return false
+	}
+	// 删除 canvas_user
+	err = mysql.DeleteCanvasUser(tx, canvasID, userID)
+	if err != nil {
+		return false
+	}
+	// 删除 canvas_info
+	err = mysql.DeleteCanvasInfo(tx, canvasID)
+	if err != nil {
+		return false
+	}
+	// 删除 canvas_data
+	err = mysql.DeleteCanvasData(tx, deleted.DataID)
+	if err != nil {
+		return false
+	}
+	// 删除 canvas_cover
+	err = mysql.DeleteCover(tx, deleted.CoverID)
+	if err != nil {
+		return false
+	}
+	return true
 }
 
 // NewCanvas 新建 canvas
@@ -95,13 +105,13 @@ func NewCanvas(name string, userID uint) (*models.Canvas, bool) {
 }
 
 func GetUserAllCanvasTotal(userID uint) int {
-    db := dao.GetDB()
-    res, err := mysql.CountUserAllCanvas(db, userID)
-    if err != nil {
-        log.Printf("fail to call GetUserAllCanvasTotal(%d), got error: %v", err)
-        return 0
-    }
-    return res
+	db := dao.GetDB()
+	res, err := mysql.CountUserAllCanvas(db, userID)
+	if err != nil {
+		log.Printf("fail to call GetUserAllCanvasTotal(%d), got error: %v", err)
+		return 0
+	}
+	return res
 }
 
 // GetUserAllCanvas 获取用户的所有 canvas

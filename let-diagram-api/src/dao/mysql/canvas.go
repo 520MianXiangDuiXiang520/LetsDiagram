@@ -1,10 +1,16 @@
 package mysql
 
 import (
-    "github.com/520MianXiangDuiXiang520/GoTools/dao"
-    "github.com/jinzhu/gorm"
-    "lets_diagram/src/models"
+	"github.com/520MianXiangDuiXiang520/GoTools/dao"
+	"github.com/jinzhu/gorm"
+	"lets_diagram/src/models"
 )
+
+func UpdateCanvasName(db *gorm.DB, canvasID uint, name string) error {
+	return db.Model(models.Canvas{}).Where("id = ?", canvasID).Update(map[string]interface{}{
+		"name": name,
+	}).Error
+}
 
 // InsertNewCanvasInfo 向 canvas 表中插入一条记录
 func InsertNewCanvasInfo(db *gorm.DB, canvas *models.Canvas) (*models.Canvas, error) {
@@ -34,19 +40,19 @@ func SelectCanvasDataIDByCanvasID(canvasID uint) (uint, error) {
 }
 
 func SelectCanvasInfoByID(db *gorm.DB, id uint) (c *models.Canvas, e error) {
-    c = &models.Canvas{}
-    e =  db.Where("id = ?", id).First(&c).Error
-    return c, e
+	c = &models.Canvas{}
+	e = db.Where("id = ?", id).First(&c).Error
+	return c, e
 }
 
 // SelectCoverIDByCanvasID 根据 id 找到 canvas 对应的 cover_id
 func SelectCoverIDByCanvasID(db *gorm.DB, canvasID uint) (uint, error) {
-    canvas := &models.Canvas{}
-    err := db.Select("cover_id").Where("id = ?", canvasID).First(canvas).Error
-    return canvas.CoverID, err
+	canvas := &models.Canvas{}
+	err := db.Select("cover_id").Where("id = ?", canvasID).First(canvas).Error
+	return canvas.CoverID, err
 }
 
 func DeleteCanvasInfo(db *gorm.DB, id uint) error {
-    err := db.Where("id = ?", id).Delete(models.Canvas{}).Error
-    return err
+	err := db.Where("id = ?", id).Delete(models.Canvas{}).Error
+	return err
 }

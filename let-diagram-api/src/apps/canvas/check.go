@@ -37,9 +37,13 @@ func CollaboratorsCheck(request *ginUtils.Request, response *ginUtils.Response) 
 }
 
 func ForkCheck(request *ginUtils.Request, response *ginUtils.Response) error {
-    return nil
+	return nil
 }
 
 func DeleteCheck(request *ginUtils.Request, response *ginUtils.Response) error {
-    return nil
+	return nil
+}
+
+func RenameCheck(request *ginUtils.Request, response *ginUtils.Response) error {
+	return nil
 }

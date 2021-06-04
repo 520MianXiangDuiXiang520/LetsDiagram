@@ -1,40 +1,52 @@
 package canvas
 
 import (
-    "github.com/520MianXiangDuiXiang520/ginUtils"
-    "github.com/gin-gonic/gin"
-    `lets_diagram/src/core/access`
-    `lets_diagram/src/models/nottable`
+	"github.com/520MianXiangDuiXiang520/ginUtils"
+	"github.com/gin-gonic/gin"
+	"lets_diagram/src/core/access"
+	"lets_diagram/src/models/nottable"
 )
+
+type RenameRequestFields struct {
+	CanvasID uint   `json:"canvas_id" check:"not null; more: 0"`
+	Name     string `json:"name" check:"len: [0, 128]"`
+}
+
+func (c *RenameRequestFields) JSON(ctx *gin.Context) error {
+	return ctx.BindJSON(c)
+}
+
+type RenameResponseFields struct {
+	Header ginUtils.BaseRespHeader `json:"header"`
+}
 
 // --- delete ---
 
 type DeleteRequestFields struct {
-    CanvasID uint `json:"canvas_id" check:"not null; more: 0"`
+	CanvasID uint `json:"canvas_id" check:"not null; more: 0"`
 }
 
 func (c *DeleteRequestFields) JSON(ctx *gin.Context) error {
-    return ctx.BindJSON(c)
+	return ctx.BindJSON(c)
 }
 
 type DeleteResponseFields struct {
-    Header   ginUtils.BaseRespHeader `json:"header"`
+	Header ginUtils.BaseRespHeader `json:"header"`
 }
-
 
 // --- fork ---
 
 type ForkRequestFields struct {
-    BaseCanvasID uint `json:"base_canvas_id" check:"not null; more: 0"`
+	BaseCanvasID uint `json:"base_canvas_id" check:"not null; more: 0"`
 }
 
 func (f *ForkRequestFields) JSON(ctx *gin.Context) error {
-    return ctx.BindJSON(f)
+	return ctx.BindJSON(f)
 }
 
 type ForkResponseFields struct {
-    Header   ginUtils.BaseRespHeader `json:"header"`
-    CanvasID uint                    `json:"canvas_id"`
+	Header   ginUtils.BaseRespHeader `json:"header"`
+	CanvasID uint                    `json:"canvas_id"`
 }
 
 // --- collaborators ---
@@ -49,10 +61,10 @@ func (f *CollaboratorsRequestFields) JSON(ctx *gin.Context) error {
 
 type CollaboratorsResponseFields struct {
 	Header ginUtils.BaseRespHeader `json:"header"`
-	Rooter []nottable.SimpleUser     `json:"rooter"`
-	Manger []nottable.SimpleUser     `json:"manger"`
-	Writer []nottable.SimpleUser     `json:"writer"`
-	Reader []nottable.SimpleUser     `json:"reader"`
+	Rooter []nottable.SimpleUser   `json:"rooter"`
+	Manger []nottable.SimpleUser   `json:"manger"`
+	Writer []nottable.SimpleUser   `json:"writer"`
+	Reader []nottable.SimpleUser   `json:"reader"`
 }
 
 // --- checkCooperate ---
@@ -106,7 +118,7 @@ type CooperateResponse struct {
 // --- new ---
 
 type NewCanvasRequestField struct {
-    Name string `json:"name" check:"len: [0, 7]"`
+	Name string `json:"name" check:"len: [0, 128]"`
 }
 
 func (f *NewCanvasRequestField) JSON(ctx *gin.Context) error {
@@ -147,14 +159,14 @@ func (f *AllCanvasRequestField) JSON(ctx *gin.Context) error {
 }
 
 type AllCanvasRespList struct {
-	ID        uint   `json:"id"`
-	Name      string `json:"name"`
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
 }
 
 type AllCanvasResponseField struct {
-	Header ginUtils.BaseRespHeader   `json:"header"`
-	Total  int                       `json:"total"`
-	List   []nottable.FullCanvas     `json:"list"`
+	Header ginUtils.BaseRespHeader `json:"header"`
+	Total  int                     `json:"total"`
+	List   []nottable.FullCanvas   `json:"list"`
 }
 
 // --- paint ---
