@@ -85,7 +85,9 @@ export default {
         this.$message.error("密码不能为空！");
       } else if (this.againPsw != this.password) {
         this.$message.error("两次密码不一致！");
-      } else {
+      } else if (this.password.length < 7) {
+        this.$message.error("密码长度不足");
+        } else {
         this.axios({
           method: "post",
           url: "user/register",
