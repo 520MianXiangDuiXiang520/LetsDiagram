@@ -42,6 +42,18 @@
       </span>
     </el-dialog>
 
+    <el-dialog title="画布重命名" :visible.sync="rename.visible">
+  <el-form :model="form">
+    <el-form-item label="新名称" :label-width="formLabelWidth">
+      <el-input v-model="rename.name" autocomplete="off"></el-input>
+    </el-form-item>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="rename.visible = false">取 消</el-button>
+    <el-button type="primary" @click="doCanvasRename">确 定</el-button>
+  </div>
+</el-dialog>
+
     <!-- canvas 列表 -->
     <div class="canvas-list">
       <el-row :gutter="20">
@@ -53,10 +65,9 @@
           class="index-list-out"
           ><el-card shadow="hover" class="canvas-cover index-list">
             <el-row :gutter="20">
-              <el-col :span="18" v-if="canvas.name != ''">{{
-                canvas.name.slice(0, 7)
-              }}</el-col>
-              <el-col :span="18" v-else> 未命名文件 </el-col>
+              <el-col :span="18" v-if="canvas.name != ''">
+                <p class="canvasName"  @click="openRenameForm(canvas.id, canvas.name)">{{canvas.name.slice(0, 20)}}</p></el-col>
+              <el-col :span="18" v-else> <p class="canvasName" @click="openRenameForm(canvas.id, '未命名文件')">未命名文件</p> </el-col>
               <el-col
                 :span="6"
                 class="delete-race"
@@ -68,9 +79,10 @@
               ></el-col>
             </el-row>
             <div class="cover" @click="openCanvas(canvas.id)">
-              <lazy-component>
+              <img :src="getCover(canvas.id)" :id="'cover'+canvas.id"/>
+              <!-- <lazy-component>
                 <img :src="getCover(canvas.id)" :id="'cover'+canvas.id"/>
-              </lazy-component>
+              </lazy-component> -->
               <!-- <el-image
                 :src="covers[canvas.id]"
                 :id="'cover' + canvas.id" layz
@@ -117,11 +129,19 @@ export default {
       size: 10,
       total: 0,
       dialogTableVisible: false,
+      renameFormVisible: false,
+      canvasRename: "",
+      canvasRenameID: 0,
       cooperateCode: "",
       deleteSure: false,
       enterNameFlag: false,
       newCanvasName: "",
       covers: {},
+      rename: {
+        id: 0,
+        name: "",
+        visible: false
+      }
     };
   },
   components: {},
@@ -203,6 +223,45 @@ export default {
         self.deleteCanvas(id);
       });
     },
+    openRenameForm: function(id, oldName) {
+      this.rename.visible = true
+      this.rename.name = oldName
+      this.rename.id = id
+    },
+    closeRenameForm: function() {
+      this.rename.visible = false
+        this.rename.name = ""
+        this.rename.id = 0
+    },
+    doCanvasRename: function() {
+       let self = this
+       self
+        .axios({
+          method: "post",
+          url: "canvas/rename/",
+          data: {
+            canvas_id: this.rename.id,
+            name: this.rename.name
+          },
+        })
+        .then(function(response) {
+          if (response.data["header"]["code"] === 200) {
+            self.$message.success("重命名成功")
+            // 修改本地数据
+            for (let i = 0; i < self.canvasList.length; i++) {
+              if (self.canvasList[i]["id"] == self.canvasRenameID) {
+                self.canvasList[i]["name"] = self.rename.name
+                break
+              }
+            }
+          }
+        })
+        .catch(function(err) {
+          console.log(err);
+          self.$message.error("重命名失败")
+        });
+        this.closeRenameForm()
+    },
     getCovers: async function(id) {
       let self = this
       await self
@@ -215,19 +274,16 @@ export default {
         })
         .then(function(response) {
           if (response.data["header"]["code"] === 200) {
-            console.log(id + "S");
             self.covers[id] = response.data["cover"];
           }
         })
         .catch(function(err) {
           console.log(err);
         });
-        console.log("end" + id);
     },
     getCover: function(id){
       let self = this
       this.getCovers(id).then(function(){
-        console.log(self.covers[id]);
         let doc = document.getElementById("cover"+id)
         doc.setAttribute("src", self.covers[id])
         
@@ -257,6 +313,10 @@ export default {
 </script>
 
 <style scoped>
+.canvasName{
+    font-size: 14px;
+    color: #303133;
+}
 .delete-race {
   border-radius: 6px;
   font-size: 15px;
