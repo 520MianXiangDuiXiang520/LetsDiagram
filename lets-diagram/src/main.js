@@ -27,10 +27,10 @@ Vue.prototype.$message = Message
 Vue.prototype.$cookie = cookie;
 axios.defaults.withCredentials = true;
 Vue.config.productionTip = false;
-// axios.defaults.baseURL = "http://139.9.117.134:8889";
-// Vue.prototype.$base_api = "139.9.117.134:8889";
-axios.defaults.baseURL = "http://localhost:8888";
-Vue.prototype.$base_api = "localhost:8888";
+axios.defaults.baseURL = "http://139.9.117.134:8889";
+Vue.prototype.$base_api = "139.9.117.134:8889";
+// axios.defaults.baseURL = "http://localhost:8888";
+// Vue.prototype.$base_api = "localhost:8888";
 
 // 请求拦截器
 axios.interceptors.request.use(function (config) {
